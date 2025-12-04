@@ -18,6 +18,11 @@ pub fn main() !void {
     var file_reader: std.fs.File.Reader = file.readerStreaming(&read_buf);
     const reader = &file_reader.interface;
 
+    const sum = try partOne(reader);
+    std.debug.print("sum: {d}\n", .{sum});
+}
+
+fn partOne(reader: *std.Io.Reader) !u16 {
     var sum: u16 = 0;
     var position: i16 = 50;
 
@@ -48,5 +53,5 @@ pub fn main() !void {
         std.debug.print("position {d}\n", .{position});
         if (position == 0) sum += 1;
     }
-    std.debug.print("sum: {d}\n", .{sum});
+    return sum;
 }
