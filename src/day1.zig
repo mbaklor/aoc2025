@@ -44,12 +44,7 @@ fn partOne(reader: *std.Io.Reader) !u16 {
                 break;
             },
         }
-        while (position < 0) {
-            position += 100;
-        }
-        while (position > 99) {
-            position -= 100;
-        }
+        position = @mod(position, 100);
         std.debug.print("position {d}\n", .{position});
         if (position == 0) sum += 1;
     }
