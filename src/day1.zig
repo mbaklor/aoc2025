@@ -58,41 +58,23 @@ fn partTwo(reader: *std.Io.Reader) !u16 {
     var i: u16 = 1;
     std.debug.print("0.\tstart:\tposition 50\tsum 0\n", .{});
     while (try reader.takeDelimiter('\n')) |line| : (i += 1) {
-        var num = try std.fmt.parseInt(i16, line[1..], 10);
+        if (line.len == 0) break;
+        const num = try std.fmt.parseInt(i16, line[1..], 10);
         // const startingPosition = position;
         std.debug.print("{d}.\t {d} ", .{ i, position });
+        var div: u16 = 0;
         switch (line[0]) {
             'L' => {
-                std.debug.print("- {d} = ", .{num});
-                while (num != 0) {
-                    position -= 1;
-                    while (position < 0) {
-                        position += 100;
-                    }
-                    while (position > 99) {
-                        position -= 100;
-                    }
-                    if (position == 0) {
-                        sum += 1;
-                    }
-                    num -= 1;
+                if (position == 0) position = 100;
+                position -= num;
+                if (@mod(position, 100) == 0 and position != 0) {
+                    div += 1;
                 }
+                std.debug.print("- {d} = ", .{num});
             },
             'R' => {
+                position += num;
                 std.debug.print("+ {d} = ", .{num});
-                while (num != 0) {
-                    position += 1;
-                    while (position < 0) {
-                        position += 100;
-                    }
-                    while (position > 99) {
-                        position -= 100;
-                    }
-                    if (position == 0) {
-                        sum += 1;
-                    }
-                    num -= 1;
-                }
             },
             else => {
                 std.debug.print("how did we get here?? {s}\n", .{line});
@@ -100,13 +82,13 @@ fn partTwo(reader: *std.Io.Reader) !u16 {
             },
         }
         std.debug.print("{d}\t", .{position});
-        const div = @abs(@divFloor(position, 100));
+        div += @abs(@divFloor(position, 100));
+        if (position == 0) div += 1;
         // if (startingPosition == 0 and line[0] == 'L' and div != 0) {
         //     div -= 1;
         // }
-        // sum += @intCast(div);
-        // position = @mod(position, 100);
-        // if (position == 0 and div == 0) sum += 1;
+        position = @mod(position, 100);
+        sum += @intCast(div);
         std.debug.print("new position {d}\tdiv {d}\tsum {d}\n", .{ position, div, sum });
     }
 
